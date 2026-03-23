@@ -1,15 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.8.1'
+        classpath 'com.android.tools.build:gradle:8.5.0'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -19,8 +17,25 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
+    }
+    
+    // Workaround for ButterKnife annotation processor with JDK 16+
+    tasks.withType(JavaCompile).configureEach {
+        options.fork = true
+        options.forkOptions.jvmArgs += [
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+            '--add-opens', 'jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED'
+        ]
     }
 }
 

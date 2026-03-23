@@ -3,13 +3,14 @@ package com.tu.poscard.ui;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.wcdb.database.SQLiteDatabase;
 import com.tu.poscard.Navigator;
 import com.tu.poscard.PosCardApplication;

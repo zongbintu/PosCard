@@ -1,10 +1,9 @@
 package com.tu.poscard.ui;
 
 import android.content.ContentValues;
-import android.support.design.widget.TextInputEditText;
 import android.view.View;
-import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.tencent.wcdb.database.SQLiteDatabase;
 import com.tu.poscard.PosCardApplication;
 import com.tu.poscard.R;
@@ -41,7 +40,7 @@ public class SettleTypeAddActivity extends BaseActivity {
 
     @OnClick(R.id.save_btn)
     void onClick(View v) {
-        if (nameEditText.getText().length() < 1) {
+        if (nameEditText.getText() == null || nameEditText.getText().length() < 1) {
             showError(nameEditText, R.string.hint_input_name);
             return;
         }

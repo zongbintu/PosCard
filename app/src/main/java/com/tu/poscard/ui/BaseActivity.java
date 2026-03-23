@@ -1,16 +1,17 @@
 package com.tu.poscard.ui;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.textfield.TextInputLayout;
 import com.tu.poscard.R;
 
 import butterknife.BindView;
@@ -34,17 +35,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(layoutId());
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (System.currentTimeMillis() - lastToolbarClick < 500) {
-                    onTitleDoubleClick();
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            toolbar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (System.currentTimeMillis() - lastToolbarClick < 500) {
+                        onTitleDoubleClick();
+                    }
+                    lastToolbarClick = System.currentTimeMillis();
                 }
-                lastToolbarClick = System.currentTimeMillis();
-            }
-        });
+            });
+        }
         initView();
     }
 
@@ -60,11 +62,15 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     void setTitle(int titleStrId, boolean displayHomeAsUpdateEnable) {
-        getSupportActionBar().setHomeButtonEnabled(displayHomeAsUpdateEnable);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(displayHomeAsUpdateEnable);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeButtonEnabled(displayHomeAsUpdateEnable);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(displayHomeAsUpdateEnable);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         TextView textView = findViewById(R.id.toolbar_title);
-        textView.setText(titleStrId);
+        if (textView != null) {
+            textView.setText(titleStrId);
+        }
     }
 
     @Override
@@ -97,9 +103,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     void showError(EditText editText, String msg) {
-        TextInputLayout textInputLayout = (TextInputLayout) editText.getParent().getParent();
-        textInputLayout.setError(msg);
-        editText.requestFocus();
-        editText.setSelection(textInputLayout.getEditText().length());
+        View parent = (View) editText.getParent().getParent();
+        if (parent instanceof TextInputLayout) {
+            TextInputLayout textInputLayout = (TextInputLayout) parent;
+            textInputLayout.setError(msg);
+            editText.requestFocus();
+            editText.setSelection(textInputLayout.getEditText().length());
+        }
     }
 }

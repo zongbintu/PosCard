@@ -11,16 +11,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import butterknife.BindView;
-import butterknife.OnClick;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.wcdb.database.SQLiteDatabase;
 import com.tencent.wcdb.database.SQLiteDirectCursor;
 import com.tu.poscard.Navigator;
@@ -33,14 +33,18 @@ import com.tu.poscard.data.model.SelectMode;
 import com.tu.poscard.data.model.Statement;
 import com.tu.poscard.util.MathUtils;
 import com.tu.poscard.util.Utils;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
+
+import butterknife.BindView;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -152,13 +156,13 @@ public class StatementAddActivity extends BaseActivity {
       View v) {
     switch (v.getId()) {
       case R.id.bankcard_select_iv:
-        // 2018/12/21 选择银行卡
+        // 选择银行卡
         Navigator.startBankcardListActivity(this, Navigator.REQUEST_CODE_STATEMENT_ADD,
             SelectMode.SINGLE);
         break;
       case R.id.save_btn:
         String paymentDueDate = paymentDueDateEditText.getText().toString();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.CHINA);
         try {
           Date date = simpleDateFormat.parse(paymentDueDate);
 
@@ -191,7 +195,6 @@ public class StatementAddActivity extends BaseActivity {
           } else {
             long rowId = db.insert("statement", null, cv);
             isSuccess = rowId != -1;
-            // TODO: 2019-11-23 查询statement
             com.tencent.wcdb.Cursor cursor = db.rawQueryWithFactory(SQLiteDirectCursor.FACTORY,
                 "select id,bankcard,new_balance,min_payment,payment_due_date,new_payment,status,event_id from statement "
                     + " where id = ? ;", new String[]{String.valueOf(rowId)}, "statement");
@@ -207,7 +210,6 @@ public class StatementAddActivity extends BaseActivity {
                 statement.setStatus(cursor.getInt(cursor.getColumnIndex("status")));
                 statement.setNew_payment(new BigDecimal(cursor.getDouble(cursor.getColumnIndex("new_payment"))));
                 statement.setEvent_id(cursor.getString(cursor.getColumnIndex("event_id")));
-                //处理数据
               }
               cursor.close();
             } catch (Exception e) {
@@ -220,17 +222,13 @@ public class StatementAddActivity extends BaseActivity {
               String eventId = statement.getEvent_id();
               eventId = addEvent(eventId,bankcardEditText.getText().toString(), date,
                   newBalanceEditText.getText().toString());
-              //更新 日历id
-              if (!eventId.equals(statement.getEvent_id())) {
+              if (eventId != null && !eventId.equals(statement.getEvent_id())) {
                 ContentValues eventCV = new ContentValues();
                 eventCV.put("event_id", eventId);
-                long count = db.updateWithOnConflict("statement", eventCV, "id=?",
+                db.updateWithOnConflict("statement", eventCV, "id=?",
                     new String[] { String.valueOf(statement.getId()) }, SQLiteDatabase.CONFLICT_NONE);
-                Timber.d("账单{}, 更新eventId update is :{}", statement.getId(), count > 0);
               }
             }
-
-
             toast(R.string.msg_success_add);
             setResult(RESULT_OK);
             finish();
@@ -276,22 +274,14 @@ public class StatementAddActivity extends BaseActivity {
     }
   };
 
-  /**
-   * 日历添加
-   */
   String addEvent(String eventId,String bankcardName, Date paymentDueDate, String new_balance) {
-    //有权限再添加日历
     if (checkDangerousPermissions(this, permissions)) {
       if(!TextUtils.isEmpty(eventId)){
-        //修改日历
         ContentValues values = new ContentValues();
-        Uri updateUri = null;
-        // The new title for the event
         values.put(CalendarContract.Events.TITLE, bankcardName + "-￥" + new_balance);
-        updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, Long.parseLong(eventId));
+        Uri updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, Long.parseLong(eventId));
         int rows = getContentResolver().update(updateUri, values, null, null);
         if(rows >0) {
-          //更新成功，未更新成功则重新插入
           return eventId;
         }
       }
@@ -313,15 +303,15 @@ public class StatementAddActivity extends BaseActivity {
       values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
       Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
 
+      if (uri == null) return null;
       String eventId2 = uri.getLastPathSegment();
-      // 添加提醒
       ContentResolver reminderCR = getContentResolver();
       ContentValues reminderValues = new ContentValues();
       reminderValues.put(CalendarContract.Reminders.EVENT_ID, eventId2);
       reminderValues.put(CalendarContract.Reminders.MINUTES, -1);
       reminderValues.put(CalendarContract.Reminders.METHOD,
           CalendarContract.Reminders.METHOD_ALERT);
-      Uri reminderUri = reminderCR.insert(CalendarContract.Reminders.CONTENT_URI, reminderValues);
+      reminderCR.insert(CalendarContract.Reminders.CONTENT_URI, reminderValues);
 
       return eventId2;
     }

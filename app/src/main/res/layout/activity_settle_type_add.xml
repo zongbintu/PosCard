@@ -13,74 +13,74 @@
         android:orientation="vertical"
         android:padding="@dimen/margin">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 style="@style/EditText"
                 android:id="@+id/name_et"
                 android:hint="@string/hint_input_name"
                 android:maxLength="256"
                 tools:text="2249" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             style="@style/TextView"
             android:text="@string/t1"/>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/t_service_charge_et"
                 style="@style/EditText"
                 android:hint="@string/hint_service_charge_expression"
                 android:inputType="numberDecimal"
                 android:maxLength="12"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/t_extra_charge_et"
                 style="@style/EditText"
                 android:hint="@string/hint_extra_charge_expression"
                 android:inputType="numberDecimal"
                 android:maxLength="12"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             style="@style/TextView"
             android:text="@string/d0"/>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/d_service_charge_et"
                 style="@style/EditText"
                 android:hint="@string/hint_service_charge_expression"
                 android:inputType="numberDecimal"
                 android:maxLength="12"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/d_extra_charge_et"
                 style="@style/EditText"
                 android:hint="@string/hint_extra_charge_expression"
                 android:inputType="numberDecimal"
                 android:maxLength="12"/>
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/save_btn"

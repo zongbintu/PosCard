@@ -3,16 +3,17 @@ package com.tu.poscard.ui;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.wcdb.database.SQLiteDatabase;
 import com.tencent.wcdb.database.SQLiteDirectCursor;
 import com.tu.poscard.Navigator;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -69,7 +71,7 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
     void initView() {
         setTitle(R.string.sold_add, true);
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         dateEditText.setText(simpleDateFormat.format(new Date()));
 
         amountEditText.addTextChangedListener(new TextWatcher() {
@@ -129,10 +131,12 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
             dialog.setCanceledOnTouchOutside(true);
             dialog.setContentView(R.layout.list);
             RecyclerView recyclerView = dialog.findViewById(R.id.list);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-            adapter = new SettleTypeAdapter(mData, this);
-            recyclerView.setAdapter(adapter);
+            if (recyclerView != null) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+                adapter = new SettleTypeAdapter(mData, this);
+                recyclerView.setAdapter(adapter);
+            }
         }
         if (!dialog.isShowing()) {
             if (mData.isEmpty()) {
@@ -172,7 +176,9 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
         } else {
             mData.addAll(posCardApplication.getSettleTypeList());
         }
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @OnClick({R.id.save_btn, R.id.settle_type_select_iv, R.id.bankcard_select_iv, R.id.date_et})
@@ -185,7 +191,7 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
             case R.id.save_btn:
 
                 String sold = dateEditText.getText().toString();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
 
                 BigDecimal amount = MathUtils.format(amountEditText.getText().toString());
                 if (new BigDecimal(0).compareTo(amount) > 0) {
@@ -241,7 +247,7 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
                 } catch (ParseException e) {
                     Timber.e(e);
                     showError(dateEditText, R.string.error_date);
-                    dateEditText.requestFocus(dateEditText.length());
+                    dateEditText.requestFocus();
                 }
                 break;
             case R.id.settle_type_select_iv:
@@ -251,8 +257,10 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
                 if (null == dateMonthDialog) {
                     dateMonthDialog = new BottomSheetDialog(this);
                     dateMonthDialog.setContentView(R.layout.layout_date_pciker);
-                    dateMonthDialog.findViewById(R.id.cancel).setOnClickListener(datePickerOnClickListener);
-                    dateMonthDialog.findViewById(R.id.confirm).setOnClickListener(datePickerOnClickListener);
+                    View cancelBtn = dateMonthDialog.findViewById(R.id.cancel);
+                    if (cancelBtn != null) cancelBtn.setOnClickListener(datePickerOnClickListener);
+                    View confirmBtn = dateMonthDialog.findViewById(R.id.confirm);
+                    if (confirmBtn != null) confirmBtn.setOnClickListener(datePickerOnClickListener);
                 }
                 if (!dateMonthDialog.isShowing())
                     dateMonthDialog.show();
@@ -269,7 +277,9 @@ public class SoldAddActivity extends BaseActivity implements SettleTypeAdapter.O
                     break;
                 case R.id.confirm:
                     DatePicker datePicker = dateMonthDialog.findViewById(R.id.date_picker);
-                    dateEditText.setText(Utils.formatDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), Utils.DATE_FORMAT_YMD));
+                    if (datePicker != null) {
+                        dateEditText.setText(Utils.formatDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth(), Utils.DATE_FORMAT_YMD));
+                    }
 
 
                     dateMonthDialog.dismiss();

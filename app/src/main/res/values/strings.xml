@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TXAssistant</string>
+    <string name="app_name">账单管理助手</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_subtitle">enum@foxmail.com</string>
@@ -29,9 +29,9 @@
     <string name="statement_date">账单日:</string>
     <string name="payment_due_date">还款日:</string>
     <string name="label_due_day">(账单日顺延)</string>
-    <string name="sold_sum_arg">交易金额%1s,手续费%2s,附加费%3s,\n剩余金额%4s</string>
-    <string name="ymu_arg">%1s年%2s月</string>
-    <string name="statement_sum_arg">共计%1s张账单,金额%2s\n未还%3s张账单,金额%4s</string>
+    <string name="sold_sum_arg">交易金额 %1$s, 手续费 %2$s, 附加费 %3$s,\n剩余金额 %4$s</string>
+    <string name="ymu_arg">%1$s年%2$s月</string>
+    <string name="statement_sum_arg">共计%1$s张账单,金额%2$s\n未还%3$s张账单,金额%4$s</string>
     <string name="today">今</string>
     <string name="day">天</string>
     <string name="day_overdue">天逾期</string>

@@ -1,15 +1,16 @@
 package com.tu.poscard.ui;
 
 import android.content.Intent;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tencent.wcdb.database.SQLiteDatabase;
 import com.tencent.wcdb.database.SQLiteDirectCursor;
 import com.tu.poscard.Navigator;
@@ -197,8 +198,10 @@ public class SoldListActivity extends BaseActivity implements OnDatePickerClicke
             dateMonthDialog = new BottomSheetDialog(this);
             dateMonthDialog.setContentView(R.layout.layout_date_pciker);
             DatePickerUtil.hideDay((DatePicker) dateMonthDialog.findViewById(R.id.date_picker));
-            dateMonthDialog.findViewById(R.id.cancel).setOnClickListener(datePickerOnClickListener);
-            dateMonthDialog.findViewById(R.id.confirm).setOnClickListener(datePickerOnClickListener);
+            View cancelBtn = dateMonthDialog.findViewById(R.id.cancel);
+            if (cancelBtn != null) cancelBtn.setOnClickListener(datePickerOnClickListener);
+            View confirmBtn = dateMonthDialog.findViewById(R.id.confirm);
+            if (confirmBtn != null) confirmBtn.setOnClickListener(datePickerOnClickListener);
         }
         if (!dateMonthDialog.isShowing())
             dateMonthDialog.show();

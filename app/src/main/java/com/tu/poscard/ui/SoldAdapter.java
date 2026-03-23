@@ -1,11 +1,12 @@
 package com.tu.poscard.ui;
 
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tu.poscard.R;
 import com.tu.poscard.data.model.Sold;
@@ -67,20 +68,32 @@ public class SoldAdapter extends RecyclerView.Adapter<SoldAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, int position) {
         int itemViewType = getItemViewType(position);
         if (ITEM_TYPE_HEADER == itemViewType) {
-            holder.monthTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onDatePickerClickedListener.onDatePickerClicked(v);
-                }
-            });
-            holder.sumTextView.setText(sum);
-            holder.monthTextView.setText(month);
+            if (holder.monthTextView != null) {
+                holder.monthTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onDatePickerClickedListener.onDatePickerClicked(v);
+                    }
+                });
+                holder.monthTextView.setText(month);
+            }
+            if (holder.sumTextView != null) {
+                holder.sumTextView.setText(sum);
+            }
         } else if (itemViewType == ITEM_TYPE_NORMAL) {
             Sold sold = mValues.get(position);
-            holder.dateTextView.setText(Utils.formatDate(sold.getSold(), Utils.DATE_FORMAT_YMD, Utils.DATE_FORMAT_YMD_U));
-            holder.bankcardTextView.setText(sold.getBankCard());
-            holder.amountTextView.setText(Utils.formatMoney(sold.getAmount()));
-            holder.balanceTextView.setText(Utils.formatMoney(MathUtils.subtract(MathUtils.subtract(sold.getAmount(), sold.getServiceCharge()), sold.getExtraCharge())));
+            if (holder.dateTextView != null) {
+                holder.dateTextView.setText(Utils.formatDate(sold.getSold(), Utils.DATE_FORMAT_YMD, Utils.DATE_FORMAT_YMD_U));
+            }
+            if (holder.bankcardTextView != null) {
+                holder.bankcardTextView.setText(sold.getBankCard());
+            }
+            if (holder.amountTextView != null) {
+                holder.amountTextView.setText(Utils.formatMoney(sold.getAmount()));
+            }
+            if (holder.balanceTextView != null) {
+                holder.balanceTextView.setText(Utils.formatMoney(MathUtils.subtract(MathUtils.subtract(sold.getAmount(), sold.getServiceCharge()), sold.getExtraCharge())));
+            }
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -131,9 +144,6 @@ public class SoldAdapter extends RecyclerView.Adapter<SoldAdapter.ViewHolder> {
             super(view);
             ButterKnife.bind(this, view);
             itemView = view;
-            bankcardTextView = view.findViewById(R.id.bankcard);
-            amountTextView = view.findViewById(R.id.amount);
-            balanceTextView = view.findViewById(R.id.balance);
         }
     }
 }
